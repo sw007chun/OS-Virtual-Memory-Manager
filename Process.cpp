@@ -16,7 +16,7 @@ int Process::GetPID() {
 	return pid;
 }
 PTE* Process::GetVPage(int v_page_num) {
-//	if (v_page_num == 58)
+//	if (v_page_num == 11)
 //		cout << "test" << endl;
 
 	if (p_table[v_page_num] == NULL) {
@@ -24,7 +24,7 @@ PTE* Process::GetVPage(int v_page_num) {
 		p_table[v_page_num] = new PTE();
 		for (it = vma_list->begin(); it != vma_list->end(); it++) {
 			if (v_page_num >= (*it)->start_page && v_page_num <= (*it)->end_page) {
-				if (v_page_num == 58)
+//				if (v_page_num == 11)
 //					cout << (*it)->start_page << ' ' << (*it)->end_page << ' ' << (*it)->write_protected <<' ' << (*it)->filemap << endl;
 				if ((*it)->write_protected)
 					p_table[v_page_num]->SetWriteProtected();
