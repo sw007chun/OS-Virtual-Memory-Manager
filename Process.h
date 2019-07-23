@@ -63,12 +63,12 @@ public:
 	void SetPresent(int v_page_num);
 	void SetModified(int v_page_num);
 	void SetPagedOut(int v_page_num);
-	void SetSegv();
 	void UnSetPresent(int v_page_num);
 	void UnSetModified(int v_page_num);
 	bool IsModified(int v_page_num);
 	bool IsPagedOut(int v_page_num);
 	bool IsFileMapped(int v_page_num);
+	void SEGV();
 	void SEGProt();
 	void FileOut();
 	void FileIn();

@@ -173,6 +173,7 @@ int main(int argc, char* argv[]) {
 		case 'w':
 			page_entry = current_process->GetVPage(v_page_num);
 			if(page_entry->IsSEGV()) {
+				current_process->SEGV();
 				trace (" SEGV");
 				continue;
 			}

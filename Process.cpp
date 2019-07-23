@@ -35,7 +35,6 @@ PTE* Process::GetVPage(int v_page_num) {
 		}
 		if (it == vma_list->end()) {
 			p_table[v_page_num]->SetSEGV();
-			p_stat.segv++;
 		}
 	}
 	return p_table[v_page_num];
@@ -51,6 +50,7 @@ void Process::SetPagedOut(int v_page_num) {
 	p_table[v_page_num]->SetPagedOut();
 	p_stat.outs++;
 }
+
 void Process::UnSetPresent(int v_page_num) {
 	p_table[v_page_num]->UnSetPresent();
 	p_stat.unmaps++;
@@ -66,6 +66,9 @@ bool Process::IsPagedOut(int v_page_num) {
 }
 bool Process::IsFileMapped(int v_page_num) {
 	return p_table[v_page_num]->IsFiledMapped();
+}
+void Process::SEGV() {
+	p_stat.segv++;
 }
 void Process::SEGProt() {
 	p_stat.segprot++;
