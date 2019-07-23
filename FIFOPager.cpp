@@ -16,15 +16,15 @@ FIFOPager::FIFOPager(FrameTable* frame_table) : Pager(frame_table) {
 
 Frame* FIFOPager::select_victim_frame() {
 	if (!fifo_q.empty()) {
-		pte * p = fifo_q.front();
+		PTE * p = fifo_q.front();
 		fifo_q.pop();
 
 //		cout << "pop: " << p->p_frame << endl;
-		return f_table->GetAt(p->p_frame);
+		return f_table->GetAt(p->GetPageFrame());
 	} else
 		return NULL;
 }
-void FIFOPager::add_page(pte *page_entry) {
+void FIFOPager::add_page(PTE *page_entry) {
 	fifo_q.push(page_entry);
 //	cout << "add: " << page_entry->p_frame << endl;
 }

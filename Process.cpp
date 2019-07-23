@@ -7,51 +7,92 @@
 
 #include "Process.h"
 
-Process::Process (int p_num, vma vma_array[]) {
+Process::Process (int p_num, list <vma *> *vma_list) {
 	pid = p_num;
-	this->vma_array = vma_array;
-	p_table = new pte*[MAX_PTE]();
+	this->vma_list = vma_list;
+	p_table = new PTE*[MAX_PTE]();
 }
 int Process::GetPID() {
 	return pid;
 }
-pte* Process::GetVPage(int v_page_num) {
+PTE* Process::GetVPage(int v_page_num) {
 	if (p_table[v_page_num] == NULL) {
-		int i = 0;
-		while (vma_array[i] != NULL) {
-			if (v_page_num >= vma_array[i].start_page && v_page_num <= vma_array[i].end_page) {
-				p_table[v_page_num] = new pte(vma_array[i].write_protected, vma_array[i].filemap);
+		list<vma *>::iterator it;
+
+		for (it = vma_list->begin(); it != vma_list->end(); it++) {
+			if (v_page_num >= (*it)->start_page && v_page_num <= (*it)->end_page) {
+				p_table[v_page_num] = new PTE((*it)->write_protected, (*it)->filemap);
+				break;
 			}
-			i++;
+		}
+		if (it == vma_list->end()) {
+			Process::SetSegv(v_page_num);
 		}
 	}
 	return p_table[v_page_num];
 }
+void Process::SetPresent(int v_page_num) {
+	p_table[v_page_num]->SetPresent();
+	p_stat.maps++;
+}
 void Process::SetModified(int v_page_num) {
-	p_table[v_page_num]->modified = 1;
-}
-void Process::UnsetModified(int v_page_num) {
-	p_table[v_page_num]->modified = 0;
-}
-bool Process::IsModified(int v_page_num) {
-	return p_table[v_page_num]->modified;
+	p_table[v_page_num]->SetModified();
 }
 void Process::SetPagedOut(int v_page_num) {
-	p_table[v_page_num]->pagedout = 1;
+	p_table[v_page_num]->SetPagedOut();
 	p_stat.outs++;
 }
+void Process::SetSegv(int v_page_num) {
+	p_table[v_page_num]->SetSEGV();
+	p_stat.segv++;
+}
+void Process::UnSetPresent(int v_page_num) {
+	p_table[v_page_num]->UnSetPresent();
+	p_stat.unmaps++;
+}
+void Process::UnSetModified(int v_page_num) {
+	p_table[v_page_num]->UnSetModified();
+}
+bool Process::IsModified(int v_page_num) {
+	return p_table[v_page_num]->IsModified();
+}
 bool Process::IsPagedOut(int v_page_num) {
-	return p_table[v_page_num]->pagedout;
+	return p_table[v_page_num]->IsPagedOut();
+}
+bool Process::IsFileMapped(int v_page_num) {
+	return p_table[v_page_num]->IsFiledMapped();
+}
+void Process:: SEGProt() {
+	p_stat.segprot++;
+}
+void Process:: FileOut() {
+	p_stat.fouts++;
+}
+void Process:: FileIn() {
+	p_stat.fins++;
+}
+void Process:: SwapIn() {
+	p_stat.ins++;
+}
+void Process:: Zero() {
+	p_stat.zeros++;
+}
+void Process::PrintProc() {
+	cout << "PROC[" << pid << "]: U=" << p_stat.unmaps << " M=" << p_stat.maps << " I=" << p_stat.ins << " O=" << p_stat.outs <<
+			 " FI=" << p_stat.fins << " FO=" << p_stat.fouts << " Z=" << p_stat.zeros << " SV=" << p_stat.segv << " SP=" << p_stat.segprot << endl;
 }
 
-//void Process::SetUnmaps() {
-//	pstat.unmaps++;
-//}
-//void Process::SetMaps() {
-//	pstat.maps++;
-//}
-//void Process::SetIn();
-//void Process::SetOut();
-//void Process::SetZero();
-//void Process::SetSegv();
-//void Process::SetSegProt();
+unsigned long long Process::Cost() {
+	const int kMapCost = 400;
+	const int kPageCost = 3000;
+	const int kFileCost = 2500;
+	const int kZeroCost = 150;
+	const int kSEGVCost = 240;
+	const int kSEGPROTCost = 300;
+
+	unsigned long long proc_cost = (p_stat.unmaps + p_stat.maps)*kMapCost;
+	proc_cost += (p_stat.ins + p_stat.outs)*kPageCost;
+	proc_cost += (p_stat.fins + p_stat.fouts)*kFileCost;
+	proc_cost += p_stat.zeros*kZeroCost + p_stat.segv*kSEGVCost + p_stat.segprot*kSEGPROTCost;
+	return proc_cost;
+}

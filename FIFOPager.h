@@ -13,11 +13,11 @@
 
 class FIFOPager : public Pager {
 private:
-	queue <pte *> fifo_q;
+	queue <PTE *> fifo_q;
 public:
 	FIFOPager(FrameTable* frame_table);
 	Frame* select_victim_frame();
-	void add_page(pte *page_enty);
+	void add_page(PTE *page_enty);
 	~FIFOPager() { };
 };
 

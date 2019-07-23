@@ -9,12 +9,21 @@
 #define FRAME_H_
 
 class Frame {
-public:
+private:
 //	Frame();
 //	unsigned is_new:1;
 	unsigned frame_num:7;
 	unsigned pid:4;
 	unsigned v_page_num:6;
-
+	unsigned is_mapped:1;
+public:
+	int GetFrameNum();
+	int GetPID();
+	int GetVPageNum();
+	bool IsMapped();
+	void SetFrameNum(int frame);
+	void SetPID(int pid);
+	void SetVPage(int v_page);
+	void SetMapped();
 };
 #endif /* FRAME_H_ */

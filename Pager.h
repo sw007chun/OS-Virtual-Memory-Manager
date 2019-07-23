@@ -20,7 +20,7 @@ public:
 	FrameTable* f_table;
 	Pager (FrameTable* frame_table);
 	virtual Frame* select_victim_frame() = 0;
-	virtual void add_page(pte *page_enty) = 0;
+	virtual void add_page(PTE *page_enty) = 0;
 	virtual ~Pager() { };
 };
 

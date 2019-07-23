@@ -10,26 +10,37 @@
 
 #define MAX_PTE (64)
 
-typedef struct pte {
+class PTE {
+private:
 	unsigned present:1;
 	unsigned write_protected:1;
 	unsigned modified:1;
 	unsigned referenced:1;
-	unsigned pagedout:1;
-	unsigned p_frame:5;
+	unsigned paged_out:1;
+	unsigned p_frame:7;
 	unsigned segv:1;
 	unsigned file_mapped:1;
-	pte(unsigned wp, unsigned fm) {
-		present = 0;
-		write_protected = wp;
-		modified = 0;
-		referenced = 0;
-		pagedout = 0;
-		p_frame = 0;
-		segv = 0;
-		file_mapped = fm;
-	}
-} pte;
+public:
+	PTE(unsigned wp, unsigned fm);
+	void SetPresent();
+	void UnSetPresent();
+	void SetModified();
+	void UnSetModified();
+	void SetReferenced();
+	void UnSetReferenced();
+	void SetPagedOut();
+	void SetPageFrame(int p_frame_num);
+	void SetSEGV();
+	bool IsPresent();
+	bool IsWriteProtected();
+	bool IsModified();
+	bool IsReferenced();
+	bool IsPagedOut();
+	int GetPageFrame();
+	bool IsSEGV();
+	bool IsFiledMapped();
+
+};
 
 
 #endif /* PAGETABLEENTRY_H_ */

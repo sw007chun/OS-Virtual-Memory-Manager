@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include "Frame.h"
+using namespace std;
 
 class FrameTable {
 private:
@@ -21,6 +22,7 @@ public:
 	Frame* GetFreeFrame();
 	Frame* GetAt(int frame_num);
 	int GetMaxNum();
+	void PrintFrameTable();
 };
 
 

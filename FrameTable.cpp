@@ -15,7 +15,7 @@ FrameTable::FrameTable(int num) {
 Frame* FrameTable::GetFreeFrame() {
 	if (cur_num_frame < max_num_frame - 1) {
 		cur_num_frame++;
-		f_table[cur_num_frame].frame_num = cur_num_frame;
+		f_table[cur_num_frame].SetFrameNum(cur_num_frame);
 		return &f_table[cur_num_frame];
 	}
 	else
@@ -26,4 +26,15 @@ Frame* FrameTable::GetAt(int frame_num) {
 }
 int FrameTable::GetMaxNum() {
 	return max_num_frame;
+}
+void FrameTable::PrintFrameTable(){
+	cout << "FT:";
+	for (int i = 0; i < max_num_frame; i++) {
+		cout << ' ';
+		if (f_table[i].IsMapped())
+			cout << f_table[i].GetPID() << ':' << f_table[i].GetVPageNum();
+		else
+			cout << '*';
+	}
+	cout << endl;
 }
