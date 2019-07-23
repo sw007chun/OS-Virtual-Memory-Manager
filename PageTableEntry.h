@@ -21,9 +21,10 @@ private:
 	unsigned segv:1;
 	unsigned file_mapped:1;
 public:
-	PTE(unsigned wp, unsigned fm);
+	PTE();
 	void SetPresent();
 	void UnSetPresent();
+	void SetWriteProtected();
 	void SetModified();
 	void UnSetModified();
 	void SetReferenced();
@@ -31,6 +32,7 @@ public:
 	void SetPagedOut();
 	void SetPageFrame(int p_frame_num);
 	void SetSEGV();
+	void SetFileMapped();
 	bool IsPresent();
 	bool IsWriteProtected();
 	bool IsModified();

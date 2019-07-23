@@ -8,15 +8,15 @@
 #include "PageTableEntry.h"
 
 
-PTE::PTE(unsigned wp, unsigned fm) {
+PTE::PTE() {
 	present = 0;
-	write_protected = wp;
+	write_protected = 0;
 	modified = 0;
 	referenced = 0;
 	paged_out = 0;
 	p_frame = 0;
 	segv = 0;
-	file_mapped = fm;
+	file_mapped = 0;
 }
 
 void PTE::SetPresent() {
@@ -24,6 +24,9 @@ void PTE::SetPresent() {
 }
 void PTE::UnSetPresent() {
 	present = 0;
+}
+void PTE::SetWriteProtected() {
+	write_protected = 1;
 }
 void PTE::SetModified() {
 	modified = 1;
@@ -45,6 +48,9 @@ void PTE::SetPageFrame(int p_frame_num) {
 }
 void PTE::SetSEGV() {
 	segv = 1;
+}
+void PTE::SetFileMapped() {
+	file_mapped = 1;
 }
 bool PTE::IsPresent() {
 	return present;

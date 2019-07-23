@@ -273,8 +273,8 @@ int main(int argc, char* argv[]) {
 					cout << '*';
 				}
 			}
+			cout << endl;
 		}
-		cout << endl;
 	}
 
 	if (frame_table_option) {
@@ -289,7 +289,7 @@ int main(int argc, char* argv[]) {
 			proc[i]->PrintProc();
 			total_cost += proc[i]->Cost();
 		}
-		total_cost += num_instruction + context_switches*kSwitchCost + process_exits*kExitCost - 1;
+		total_cost += num_instruction - context_switches - process_exits + context_switches*kSwitchCost + process_exits*kExitCost;
 		cout << "TOTALCOST " << num_instruction << ' ' << context_switches << ' ' << process_exits << ' ' << total_cost << endl;
 	}
 

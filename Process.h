@@ -63,7 +63,7 @@ public:
 	void SetPresent(int v_page_num);
 	void SetModified(int v_page_num);
 	void SetPagedOut(int v_page_num);
-	void SetSegv(int v_page_num);
+	void SetSegv();
 	void UnSetPresent(int v_page_num);
 	void UnSetModified(int v_page_num);
 	bool IsModified(int v_page_num);

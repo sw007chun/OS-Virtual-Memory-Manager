@@ -18,15 +18,19 @@ int Process::GetPID() {
 PTE* Process::GetVPage(int v_page_num) {
 	if (p_table[v_page_num] == NULL) {
 		list<vma *>::iterator it;
-
+		p_table[v_page_num] = new PTE();
 		for (it = vma_list->begin(); it != vma_list->end(); it++) {
 			if (v_page_num >= (*it)->start_page && v_page_num <= (*it)->end_page) {
-				p_table[v_page_num] = new PTE((*it)->write_protected, (*it)->filemap);
+				if ((*it)->write_protected)
+					p_table[v_page_num]->SetWriteProtected();
+				if ((*it)->filemap)
+					p_table[v_page_num]->SetFileMapped();
 				break;
 			}
 		}
 		if (it == vma_list->end()) {
-			Process::SetSegv(v_page_num);
+			p_table[v_page_num]->SetSEGV();
+			p_stat.segv++;
 		}
 	}
 	return p_table[v_page_num];
@@ -41,10 +45,6 @@ void Process::SetModified(int v_page_num) {
 void Process::SetPagedOut(int v_page_num) {
 	p_table[v_page_num]->SetPagedOut();
 	p_stat.outs++;
-}
-void Process::SetSegv(int v_page_num) {
-	p_table[v_page_num]->SetSEGV();
-	p_stat.segv++;
 }
 void Process::UnSetPresent(int v_page_num) {
 	p_table[v_page_num]->UnSetPresent();
@@ -62,19 +62,19 @@ bool Process::IsPagedOut(int v_page_num) {
 bool Process::IsFileMapped(int v_page_num) {
 	return p_table[v_page_num]->IsFiledMapped();
 }
-void Process:: SEGProt() {
+void Process::SEGProt() {
 	p_stat.segprot++;
 }
-void Process:: FileOut() {
+void Process::FileOut() {
 	p_stat.fouts++;
 }
-void Process:: FileIn() {
+void Process::FileIn() {
 	p_stat.fins++;
 }
-void Process:: SwapIn() {
+void Process::SwapIn() {
 	p_stat.ins++;
 }
-void Process:: Zero() {
+void Process::Zero() {
 	p_stat.zeros++;
 }
 void Process::PrintProc() {
