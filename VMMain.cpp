@@ -113,18 +113,19 @@ int main(int argc, char* argv[]) {
 
 	Process *proc[num_Process];
 	int numVMA;
-	list <vma *> vma_list;
+	list <vma *> *vma_list;
 
 	for (int i = 0; i < num_Process; i++) {
 		while (getline(input_file, readline) && readline.at(0) == '#') { }
 		numVMA = atoi(readline.c_str());
+		vma_list = new list <vma *>;
 		for (int j = 0; j < numVMA; j++) {
 			vma *new_vma = new vma();
 			input_file >> new_vma->start_page >> new_vma->end_page >> new_vma->write_protected >> new_vma->filemap;
-			vma_list.push_back(new_vma);
+			vma_list->push_back(new_vma);
 		}
 		input_file.ignore();
-		proc[i] = new Process(i, &vma_list);
+		proc[i] = new Process(i, vma_list);
 	}
 
 
@@ -171,7 +172,6 @@ int main(int argc, char* argv[]) {
 		case 'r':
 		case 'w':
 			page_entry = current_process->GetVPage(v_page_num);
-
 			if(page_entry->IsSEGV()) {
 				trace (" SEGV");
 				continue;
