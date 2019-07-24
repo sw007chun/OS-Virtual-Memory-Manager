@@ -26,6 +26,7 @@ public:
 	virtual void add_page(PTE *page_enty) = 0;
 	virtual ~Pager() { };
 	void SetFree(int v_page_num);
+	void SetReferenced(int frame_num);
 };
 
 #endif /* PAGER_H_ */

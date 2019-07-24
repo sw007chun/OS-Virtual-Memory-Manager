@@ -25,3 +25,6 @@ void Pager::PrintFrameTable() {
 void Pager::SetFree(int frame_num) {
 	f_table->SetFree(frame_num);
 }
+//void Pager::SetReferenced(int frame_num) {
+//	f_table->At(frame_num)->SetReferenced();
+//}

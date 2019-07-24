@@ -12,6 +12,7 @@ Frame::Frame() {
 	pid = 0;
 	v_page_num = 0;
 	is_mapped = 0;
+//	is_referenced = 0;
 }
 int Frame::GetFrameNum() {
 	return frame_num;
@@ -31,11 +32,21 @@ void Frame::SetFrameNum(int frame) {
 void Frame::SetPage(int pid, int v_page) {
 	this->pid = pid;
 	v_page_num = v_page;
-	is_mapped = true;;
+	is_mapped = true;
+//	is_referenced = true;
 }
 void Frame::SetFree() {
 	is_mapped = false;
 }
+//bool Frame::IsReferenced() {
+//	return is_referenced;
+//}
+//void Frame::SetReferenced() {
+//	is_referenced = true;
+//}
+//void Frame::UnSetReferenced() {
+//	is_referenced = false;
+//}
 //void Frame::SetPID(int pid) {
 //	this->pid = pid;
 //}

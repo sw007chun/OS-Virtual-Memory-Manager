@@ -13,6 +13,7 @@
 #include "Pager.h"
 #include "FIFOPager.h"
 #include "RandomPager.h"
+#include "ClockPager.h"
 #include "Process.h"
 #include "FrameTable.h"
 using namespace std;
@@ -129,6 +130,7 @@ int main(int argc, char* argv[]) {
 		pager = new RandomPager(num_frame, rand, rlength);
 		break;
 	case 'c':
+		pager = new ClockPager(num_frame, proc);
 		break;
 	case 'e':
 		break;
@@ -195,7 +197,12 @@ int main(int argc, char* argv[]) {
 				current_process->SetPage(inst_num, new_frame->GetFrameNum());
 //				page_entry->SetPageFrame(new_frame->GetFrameNum());
 				pager->add_page(page_entry);
+			} else {
+				//for clock algo
+				page_entry->SetReferenced();
+//				pager->SetReferenced(page_entry->GetPageFrame());
 			}
+
 			if (instruction == 'w') {
 				if (page_entry->IsWriteProtected())
 					current_process->SEGProt();
