@@ -18,22 +18,12 @@ using namespace std;
 
 int dotrace = 0;
 
-//Frame* get_frame(FrameTable* f_table, Pager *pager) {
-//	Frame* new_frame = f_table->GetFreeFrame();
-//	if (new_frame < 0) {
-//		new_frame = pager->select_victim_frame();
-//		trace(" UNMAP " << new_frame->frame_num << ':' << new_frame->v_page_num );
-//	}
-//	return new_frame;
-//}
-
 int main(int argc, char* argv[]) {
 	int c, num_Process;
 	char algo;
 	char *option;
 	ifstream input_file;
 	ifstream random_file;
-//	FrameTable *frame_table;
 	int num_frame;
 
 	while ((c = getopt(argc, argv, "a:o:f:")) != -1) {
@@ -45,7 +35,6 @@ int main(int argc, char* argv[]) {
 			option = optarg;
 			break;
 		case 'f':
-//			frame_table = new FrameTable(atoi(optarg));
 			num_frame = atoi(optarg);
 			break;
 		case '?':
@@ -133,7 +122,6 @@ int main(int argc, char* argv[]) {
 
 	switch (algo) {
 	case 'f':
-//		pager = new FIFOPager(frame_table);
 		pager = new FIFOPager(num_frame);
 		break;
 	case 'r':
@@ -202,18 +190,15 @@ int main(int argc, char* argv[]) {
 					current_process->Zero();
 
 				new_frame->SetPage(current_process->GetPID(), inst_num);
-				current_process->SetPresent(inst_num);
-
-				page_entry->SetPageFrame(new_frame->GetFrameNum());
-//				page_entry->SetReferenced();
+				current_process->SetPage(inst_num, new_frame->GetFrameNum());
+//				page_entry->SetPageFrame(new_frame->GetFrameNum());
 				pager->add_page(page_entry);
 			}
 			if (instruction == 'w') {
-				if (page_entry->IsWriteProtected()) {
+				if (page_entry->IsWriteProtected())
 					current_process->SEGProt();
-				} else {
+				else
 					page_entry->SetModified();
-				}
 			}
 
 			break;
@@ -229,36 +214,8 @@ int main(int argc, char* argv[]) {
 	}
 
 	if (page_table_option) {
-		for (int i = 0; i < num_Process; i++) {
-			cout << "PT[" << i << "]:";
-			for (int j = 0; j < MAX_PTE; j++) {
-				cout << ' ';
-				if (proc[i]->GetVPage(j) != NULL) {
-					if (proc[i]->GetVPage(j)->IsPresent()) {
-						cout << j << ':';
-						if (proc[i]->GetVPage(j)->IsReferenced())
-							cout << "R";
-						else
-							cout << '-';
-						if (proc[i]->GetVPage(j)->IsModified())
-							cout << "M";
-						else
-							cout << '-';
-						if (proc[i]->GetVPage(j)->IsPagedOut())
-							cout << "S";
-						else
-							cout << '-';
-					} else if (proc[i]->GetVPage(j)->IsPagedOut()) {
-						cout << '#';
-					} else {
-						cout << '*';
-					}
-				} else {
-					cout << '*';
-				}
-			}
-			cout << endl;
-		}
+		for (int i = 0; i < num_Process; i++)
+			proc[i]->PrintProcTable();
 	}
 
 	if (frame_table_option) {
@@ -277,7 +234,6 @@ int main(int argc, char* argv[]) {
 		cout << "TOTALCOST " << num_instruction << ' ' << context_switches << ' ' << process_exits << ' ' << total_cost << endl;
 	}
 
-//	delete frame_table;
 	delete [] rand;
 	delete pager;
 }

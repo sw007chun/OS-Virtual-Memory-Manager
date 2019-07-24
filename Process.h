@@ -59,8 +59,8 @@ public:
 //	Process (int p_num, vma vma_array[]);
 	int GetPID();
 	PTE* GetVPage(int v_page_num);
-	void SetPresent(int v_page_num);
-	void SetModified(int v_page_num);
+	void SetPage(int v_page_num, int frame_num);
+//	void SetModified(int v_page_num);
 	void SetPagedOut(int v_page_num);
 	void UnSetPresent(int v_page_num);
 	void UnSetModified(int v_page_num);
@@ -74,6 +74,7 @@ public:
 	void SwapIn();
 	void Zero();
 	void PrintProc();
+	void PrintProcTable();
 	unsigned long long Cost();
 	void ExitProcess(Pager *pager);
 };

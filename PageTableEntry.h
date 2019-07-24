@@ -34,7 +34,7 @@ public:
 	void SetWriteProtected();
 	void SetModified();
 	void UnSetModified();
-//	void SetReferenced();
+	void SetReferenced();
 	void UnSetReferenced();
 	void SetPagedOut();
 	void UnSetPagedOut();

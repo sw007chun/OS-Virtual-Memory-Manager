@@ -39,13 +39,16 @@ PTE* Process::GetVPage(int v_page_num) {
 	}
 	return p_table[v_page_num];
 }
-void Process::SetPresent(int v_page_num) {
+void Process::SetPage(int v_page_num, int frame_num) {
 	p_table[v_page_num]->SetPresent();
+	p_table[v_page_num]->SetPageFrame(frame_num);
+	p_table[v_page_num]->SetReferenced();
 	p_stat.maps++;
+	trace (" MAP " << frame_num);
 }
-void Process::SetModified(int v_page_num) {
-	p_table[v_page_num]->SetModified();
-}
+//void Process::SetModified(int v_page_num) {
+//	p_table[v_page_num]->SetModified();
+//}
 void Process::SetPagedOut(int v_page_num) {
 	p_table[v_page_num]->SetPagedOut();
 	p_stat.outs++;
@@ -96,6 +99,36 @@ void Process::PrintProc() {
 	cout << "PROC[" << pid << "]: U=" << p_stat.unmaps << " M=" << p_stat.maps << " I=" << p_stat.ins << " O=" << p_stat.outs <<
 			 " FI=" << p_stat.fins << " FO=" << p_stat.fouts << " Z=" << p_stat.zeros << " SV=" << p_stat.segv << " SP=" << p_stat.segprot << endl;
 }
+void Process::PrintProcTable() {
+	cout << "PT[" << pid << "]:";
+	for (int j = 0; j < MAX_PTE; j++) {
+		cout << ' ';
+		if (GetVPage(j) != NULL) {
+			if (GetVPage(j)->IsPresent()) {
+				cout << j << ':';
+				if (GetVPage(j)->IsReferenced())
+					cout << "R";
+				else
+					cout << '-';
+				if (GetVPage(j)->IsModified())
+					cout << "M";
+				else
+					cout << '-';
+				if (GetVPage(j)->IsPagedOut())
+					cout << "S";
+				else
+					cout << '-';
+			} else if (GetVPage(j)->IsPagedOut()) {
+				cout << '#';
+			} else {
+				cout << '*';
+			}
+		} else {
+			cout << '*';
+		}
+	}
+	cout << endl;
+}
 unsigned long long Process::Cost() {
 	const int kMapCost = 400;
 	const int kPageCost = 3000;
@@ -116,11 +149,8 @@ void Process::ExitProcess(Pager *pager) {
 		if (p_table[i] != NULL ) {
 			if (p_table[i]->IsPresent()) {
 				UnSetPresent(i);
-
-				if (IsModified(i)) {
-					if (IsFileMapped(i))
+				if (IsModified(i) && IsFileMapped(i))
 						FileOut();
-				}
 				pager->SetFree(p_table[i]->GetPageFrame());
 			}
 			if (p_table[i]->IsPagedOut())
