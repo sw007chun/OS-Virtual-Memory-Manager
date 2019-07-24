@@ -34,17 +34,22 @@ void PTE::SetModified() {
 void PTE::UnSetModified() {
 	modified = 0;
 }
-void PTE::SetReferenced() {
-	referenced = 1;
-}
+//void PTE::SetReferenced() {
+//	referenced = 1;
+//}
 void PTE::UnSetReferenced() {
 	referenced = 0;
 }
 void PTE::SetPagedOut() {
 	paged_out = 1;
 }
+void PTE::UnSetPagedOut() {
+	paged_out = 0;
+}
 void PTE::SetPageFrame(int p_frame_num) {
 	p_frame = p_frame_num;
+	referenced = 1;
+	trace (" MAP " << p_frame_num);
 }
 void PTE::SetSEGV() {
 	segv = 1;

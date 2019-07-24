@@ -8,7 +8,14 @@
 #ifndef PAGETABLEENTRY_H_
 #define PAGETABLEENTRY_H_
 
+#include <iostream>
+#include <fstream>
+using namespace std;
+
 #define MAX_PTE (64)
+extern int dotrace;
+#define trace(fmt...) do { if (dotrace > 0) { cout << fmt << endl; fflush(stdout); } } while (0)
+
 
 class PTE {
 private:
@@ -27,9 +34,10 @@ public:
 	void SetWriteProtected();
 	void SetModified();
 	void UnSetModified();
-	void SetReferenced();
+//	void SetReferenced();
 	void UnSetReferenced();
 	void SetPagedOut();
+	void UnSetPagedOut();
 	void SetPageFrame(int p_frame_num);
 	void SetSEGV();
 	void SetFileMapped();

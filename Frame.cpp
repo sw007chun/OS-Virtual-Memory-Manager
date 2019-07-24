@@ -7,6 +7,12 @@
 
 #include "Frame.h"
 
+Frame::Frame() {
+	frame_num = 0;
+	pid = 0;
+	v_page_num = 0;
+	is_mapped = 0;
+}
 int Frame::GetFrameNum() {
 	return frame_num;
 }
@@ -22,12 +28,20 @@ bool Frame::IsMapped() {
 void Frame::SetFrameNum(int frame) {
 	frame_num = frame;
 }
-void Frame::SetPID(int pid) {
+void Frame::SetPage(int pid, int v_page) {
 	this->pid = pid;
-}
-void Frame::SetVPage(int v_page) {
 	v_page_num = v_page;
+	is_mapped = true;;
 }
-void Frame::SetMapped() {
-	is_mapped = 1;
+void Frame::SetFree() {
+	is_mapped = false;
 }
+//void Frame::SetPID(int pid) {
+//	this->pid = pid;
+//}
+//void Frame::SetVPage(int v_page) {
+//	v_page_num = v_page;
+//}
+//void Frame::SetMapped() {
+//	is_mapped = 1;
+//}

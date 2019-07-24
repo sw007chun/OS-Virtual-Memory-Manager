@@ -9,20 +9,23 @@
 #define FRAMETABLE_H_
 
 #include <iostream>
+#include <queue>
 #include "Frame.h"
 using namespace std;
 
 class FrameTable {
 private:
 	Frame* f_table;
+	queue <Frame *> free_q;
 	int max_num_frame;
 	int cur_num_frame;
 public:
 	FrameTable(int num);
 	Frame* GetFreeFrame();
-	Frame* GetAt(int frame_num);
+	Frame* At(int frame_num);
 	int GetMaxNum();
 	void PrintFrameTable();
+	void SetFree(int frame_num);
 };
 
 

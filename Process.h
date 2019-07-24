@@ -8,10 +8,9 @@
 #ifndef PROCESS_H_
 #define PROCESS_H_
 
-#include <iostream>
 #include <list>
 #include "PageTableEntry.h"
-using namespace std;
+#include "Pager.h"
 
 typedef struct vma {
 	int start_page;
@@ -76,7 +75,7 @@ public:
 	void Zero();
 	void PrintProc();
 	unsigned long long Cost();
-//	void SetSegProt();
+	void ExitProcess(Pager *pager);
 };
 
 #endif /* PROCESS_H_ */

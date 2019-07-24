@@ -18,8 +18,6 @@ using namespace std;
 
 int dotrace = 0;
 
-#define trace(fmt...) do { if (dotrace > 0) { cout << fmt << endl; fflush(stdout); } } while (0)
-
 //Frame* get_frame(FrameTable* f_table, Pager *pager) {
 //	Frame* new_frame = f_table->GetFreeFrame();
 //	if (new_frame < 0) {
@@ -35,7 +33,8 @@ int main(int argc, char* argv[]) {
 	char *option;
 	ifstream input_file;
 	ifstream random_file;
-	FrameTable *frame_table;
+//	FrameTable *frame_table;
+	int num_frame;
 
 	while ((c = getopt(argc, argv, "a:o:f:")) != -1) {
 		switch (c) {
@@ -46,7 +45,8 @@ int main(int argc, char* argv[]) {
 			option = optarg;
 			break;
 		case 'f':
-			frame_table = new FrameTable(atoi(optarg));
+//			frame_table = new FrameTable(atoi(optarg));
+			num_frame = atoi(optarg);
 			break;
 		case '?':
 			break;
@@ -133,7 +133,8 @@ int main(int argc, char* argv[]) {
 
 	switch (algo) {
 	case 'f':
-		pager = new FIFOPager(frame_table);
+//		pager = new FIFOPager(frame_table);
+		pager = new FIFOPager(num_frame);
 		break;
 	case 'r':
 		break;
@@ -154,82 +155,62 @@ int main(int argc, char* argv[]) {
 	Process *current_process;
 	PTE *page_entry;
 	Frame *new_frame;
-//	int new_frame_num;
 	char instruction;
-	int v_page_num;
+	int inst_num;
 	unsigned long num_instruction = 0;
 	unsigned long context_switches = 0;
 	unsigned long process_exits = 0;
 
-	while (input_file >> instruction >> v_page_num) {
-		trace(num_instruction << ": ==> " << instruction << ' ' << v_page_num );
+	while (input_file >> instruction >> inst_num) {
+		trace(num_instruction << ": ==> " << instruction << ' ' << inst_num );
 		num_instruction++;
 		switch (instruction) {
 		case 'c':
-			current_process = proc[v_page_num];
+			current_process = proc[inst_num];
 			context_switches++;
 			break;
 		case 'r':
 		case 'w':
-			page_entry = current_process->GetVPage(v_page_num);
+			page_entry = current_process->GetVPage(inst_num);
+
 			if(page_entry->IsSEGV()) {
 				current_process->SEGV();
-				trace (" SEGV");
 				continue;
 			}
 
 			if (!page_entry->IsPresent()) {
-				new_frame = frame_table->GetFreeFrame();
-				if (new_frame == NULL) {
-					new_frame = pager->select_victim_frame();
+				new_frame = pager->GetFrame();
 
+				if (new_frame->IsMapped()) {
 					int old_pid = new_frame->GetPID();
 					int old_page_num = new_frame->GetVPageNum();
-
 					proc[old_pid]->UnSetPresent(old_page_num);
-					trace(" UNMAP " << old_pid << ':' << old_page_num);
-
 					if (proc[old_pid]->IsModified(old_page_num )) {
 						proc[old_pid]->UnSetModified(old_page_num);
-						if (proc[old_pid]->IsFileMapped(old_page_num)) {
+						if (proc[old_pid]->IsFileMapped(old_page_num))
 							proc[old_pid]->FileOut();
-							trace (" FOUT");
-						} else {
+						else
 							proc[old_pid]->SetPagedOut(old_page_num);
-							trace (" OUT");
-						}
 					}
 				}
 
-				if (current_process->IsFileMapped(v_page_num)) {
+				if (current_process->IsFileMapped(inst_num))
 					current_process->FileIn();
-					trace (" FIN");
-				}
-				else if (current_process->IsPagedOut(v_page_num)) {
+				else if (current_process->IsPagedOut(inst_num))
 					current_process->SwapIn();
-					trace (" IN");
-				}
-				else {
+				else
 					current_process->Zero();
-					trace (" ZERO");
-				}
 
-				new_frame->SetPID(current_process->GetPID());
-				new_frame->SetVPage(v_page_num);
-				new_frame->SetMapped();
-				current_process->SetPresent(v_page_num);
-				trace (" MAP " << new_frame->GetFrameNum());
+				new_frame->SetPage(current_process->GetPID(), inst_num);
+				current_process->SetPresent(inst_num);
 
 				page_entry->SetPageFrame(new_frame->GetFrameNum());
-				page_entry->SetReferenced();
+//				page_entry->SetReferenced();
 				pager->add_page(page_entry);
 			}
-
-//			cout << frame_table->GetAt(page_entry->p_frame)->v_page_num << endl;
 			if (instruction == 'w') {
 				if (page_entry->IsWriteProtected()) {
 					current_process->SEGProt();
-					trace(" SEGPROT");
 				} else {
 					page_entry->SetModified();
 				}
@@ -237,6 +218,8 @@ int main(int argc, char* argv[]) {
 
 			break;
 		case 'e':
+			proc[inst_num]->ExitProcess(pager);
+//			pager->SetFree(inst_num);
 			process_exits++;
 			break;
 		default:
@@ -279,7 +262,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	if (frame_table_option) {
-		frame_table->PrintFrameTable();
+		pager->PrintFrameTable();
 	}
 
 	if (summary) {
@@ -294,7 +277,7 @@ int main(int argc, char* argv[]) {
 		cout << "TOTALCOST " << num_instruction << ' ' << context_switches << ' ' << process_exits << ' ' << total_cost << endl;
 	}
 
-	delete frame_table;
+//	delete frame_table;
 	delete [] rand;
 	delete pager;
 }
