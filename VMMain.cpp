@@ -12,6 +12,7 @@
 #include <vector>
 #include "Pager.h"
 #include "FIFOPager.h"
+#include "RandomPager.h"
 #include "Process.h"
 #include "FrameTable.h"
 using namespace std;
@@ -125,6 +126,7 @@ int main(int argc, char* argv[]) {
 		pager = new FIFOPager(num_frame);
 		break;
 	case 'r':
+		pager = new RandomPager(num_frame, rand, rlength);
 		break;
 	case 'c':
 		break;

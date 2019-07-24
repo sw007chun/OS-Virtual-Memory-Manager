@@ -15,9 +15,9 @@
 using namespace std;
 
 class Pager{
-private:
-public:
+protected:
 	FrameTable* f_table;
+public:
 //	Pager (FrameTable* frame_table);
 	Pager (int num_frame);
 	Frame* GetFrame();

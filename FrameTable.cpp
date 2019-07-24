@@ -24,13 +24,6 @@ Frame* FrameTable::GetFreeFrame() {
 	} else {
 		return NULL;
 	}
-//	if (cur_num_frame < max_num_frame - 1) {
-//		cur_num_frame++;
-//		f_table[cur_num_frame].SetFrameNum(cur_num_frame);
-//		return &f_table[cur_num_frame];
-//	}
-//	else
-//		return NULL;
 }
 Frame* FrameTable::At(int frame_num) {
 	return &f_table[frame_num];
@@ -52,9 +45,4 @@ void FrameTable::PrintFrameTable(){
 void FrameTable::SetFree(int frame_num) {
 	f_table[frame_num].SetFree();
 	free_q.push(&f_table[frame_num]);
-//	for (int i = 0; i < max_num_frame; i++) {
-//		f_table[i].SetFree();
-//		free_q.push(&f_table[i]);
-//		cout << " UNMAP " << process_num << ':' << f_table[i].GetVPageNum() << endl;
-//	}
 }
