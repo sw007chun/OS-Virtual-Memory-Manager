@@ -15,8 +15,7 @@ private:
 	int counter;
 public:
 	FIFOPager(int num_frame);
-	Frame* select_victim_frame();
-	void add_page(PTE *page_enty);
+	Frame* select_victim_frame(int num_instruction);
 	~FIFOPager() { };
 };
 

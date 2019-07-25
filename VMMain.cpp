@@ -14,6 +14,8 @@
 #include "FIFOPager.h"
 #include "RandomPager.h"
 #include "ClockPager.h"
+#include "NRUPager.h"
+#include "AgingPager.h"
 #include "Process.h"
 #include "FrameTable.h"
 using namespace std;
@@ -133,8 +135,10 @@ int main(int argc, char* argv[]) {
 		pager = new ClockPager(num_frame, proc);
 		break;
 	case 'e':
+		pager = new NRUPager(num_frame, proc);
 		break;
 	case 'a':
+		pager = new AgingPager(num_frame, proc);
 		break;
 	case 'w':
 		break;
@@ -171,7 +175,7 @@ int main(int argc, char* argv[]) {
 			}
 
 			if (!page_entry->IsPresent()) {
-				new_frame = pager->GetFrame();
+				new_frame = pager->GetFrame(num_instruction);
 
 				if (new_frame->IsMapped()) {
 					int old_pid = new_frame->GetPID();
@@ -195,12 +199,9 @@ int main(int argc, char* argv[]) {
 
 				new_frame->SetPage(current_process->GetPID(), inst_num);
 				current_process->SetPage(inst_num, new_frame->GetFrameNum());
-//				page_entry->SetPageFrame(new_frame->GetFrameNum());
-				pager->add_page(page_entry);
 			} else {
 				//for clock algo
 				page_entry->SetReferenced();
-//				pager->SetReferenced(page_entry->GetPageFrame());
 			}
 
 			if (instruction == 'w') {
@@ -213,7 +214,6 @@ int main(int argc, char* argv[]) {
 			break;
 		case 'e':
 			proc[inst_num]->ExitProcess(pager);
-//			pager->SetFree(inst_num);
 			process_exits++;
 			break;
 		default:

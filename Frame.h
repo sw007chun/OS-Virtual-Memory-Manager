@@ -16,7 +16,7 @@ private:
 	unsigned pid:4;
 	unsigned v_page_num:6;
 	unsigned is_mapped:1;
-//	unsigned is_referenced:1;
+	unsigned long age:32;
 public:
 	Frame();
 	int GetFrameNum();
@@ -26,6 +26,10 @@ public:
 	void SetFrameNum(int frame);
 	void SetPage(int pid, int v_page);
 	void SetFree();
+	void ShiftAge();
+	void SetAgeBit();
+	void UnSetAgeBit();
+	unsigned long GetAge();
 //	bool IsReferenced();
 //	void SetReferenced();
 //	void UnSetReferenced();

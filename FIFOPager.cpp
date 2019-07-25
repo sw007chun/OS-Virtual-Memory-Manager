@@ -14,11 +14,9 @@ FIFOPager::FIFOPager(int num_frame) : Pager(num_frame) {
 	counter = -1;
 }
 
-Frame* FIFOPager::select_victim_frame() {
+Frame* FIFOPager::select_victim_frame(int num_instruction) {
 	counter = (counter + 1) % f_table->GetMaxNum();
 	return f_table->At(counter);
-}
-void FIFOPager::add_page(PTE *page_entry) {
 }
 
 #endif /* FIFOPAGER_CPP_ */

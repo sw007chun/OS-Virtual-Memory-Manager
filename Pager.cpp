@@ -13,10 +13,10 @@
 Pager::Pager (int num_frame) {
 	f_table = new FrameTable(num_frame);
 }
-Frame* Pager::GetFrame() {
+Frame* Pager::GetFrame(int num_instruction) {
 	Frame *new_frame = f_table->GetFreeFrame();
 	if (new_frame == NULL)
-		new_frame = select_victim_frame();
+		new_frame = select_victim_frame(num_instruction);
 	return new_frame;
 }
 void Pager::PrintFrameTable() {

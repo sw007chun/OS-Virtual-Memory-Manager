@@ -44,5 +44,6 @@ void FrameTable::PrintFrameTable(){
 }
 void FrameTable::SetFree(int frame_num) {
 	f_table[frame_num].SetFree();
+	f_table[frame_num].UnSetAgeBit();
 	free_q.push(&f_table[frame_num]);
 }
