@@ -16,6 +16,7 @@
 #include "ClockPager.h"
 #include "NRUPager.h"
 #include "AgingPager.h"
+#include "WSPager.h"
 #include "Process.h"
 #include "FrameTable.h"
 using namespace std;
@@ -141,6 +142,7 @@ int main(int argc, char* argv[]) {
 		pager = new AgingPager(num_frame, proc);
 		break;
 	case 'w':
+		pager = new WSPager(num_frame, proc);
 		break;
 	default :
 		break;

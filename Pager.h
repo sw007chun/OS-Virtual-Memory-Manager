@@ -22,7 +22,7 @@ public:
 	Pager (int num_frame);
 	Frame* GetFrame(int num_instruction);
 	void PrintFrameTable();
-	virtual Frame* select_victim_frame(int num_instruction) = 0;
+	virtual Frame* select_victim_frame(unsigned long num_instruction) = 0;
 	virtual ~Pager() { };
 	void SetFree(int v_page_num);
 	void SetReferenced(int frame_num);

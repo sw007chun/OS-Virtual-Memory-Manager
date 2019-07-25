@@ -152,6 +152,7 @@ void Process::ExitProcess(Pager *pager) {
 				if (IsModified(i) && IsFileMapped(i))
 						FileOut();
 				pager->SetFree(p_table[i]->GetPageFrame());
+
 			}
 			if (p_table[i]->IsPagedOut())
 				p_table[i]->UnSetPagedOut();
