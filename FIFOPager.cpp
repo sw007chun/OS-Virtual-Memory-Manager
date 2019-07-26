@@ -16,6 +16,8 @@ FIFOPager::FIFOPager(int num_frame) : Pager(num_frame) {
 
 Frame* FIFOPager::select_victim_frame(unsigned long num_instruction) {
 	counter = (counter + 1) % f_table->GetMaxNum();
+	if (doAging)
+		cout << "ASELECT " << counter << endl;
 	return f_table->At(counter);
 }
 

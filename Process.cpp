@@ -12,20 +12,22 @@ Process::Process (int p_num, list <vma *> *vma_list) {
 	this->vma_list = vma_list;
 	p_table = new PTE*[MAX_PTE]();
 }
+Process::~Process() {
+	for (int i = 0; i < MAX_PTE; i++) {
+		if (p_table[i] != NULL )
+			delete p_table[i];
+	}
+	delete[] p_table;
+}
 int Process::GetPID() {
 	return pid;
 }
 PTE* Process::GetVPage(int v_page_num) {
-//	if (v_page_num == 11)
-//		cout << "test" << endl;
-
 	if (p_table[v_page_num] == NULL) {
 		list<vma *>::iterator it;
 		p_table[v_page_num] = new PTE();
 		for (it = vma_list->begin(); it != vma_list->end(); it++) {
 			if (v_page_num >= (*it)->start_page && v_page_num <= (*it)->end_page) {
-//				if (v_page_num == 11)
-//					cout << (*it)->start_page << ' ' << (*it)->end_page << ' ' << (*it)->write_protected <<' ' << (*it)->filemap << endl;
 				if ((*it)->write_protected)
 					p_table[v_page_num]->SetWriteProtected();
 				if ((*it)->filemap)
@@ -144,7 +146,7 @@ unsigned long long Process::Cost() {
 	return proc_cost;
 }
 void Process::ExitProcess(Pager *pager) {
-	trace ("EXIT current process " << pid);
+	cout << "EXIT current process " << pid << endl;
 	for (int i = 0; i < MAX_PTE; i++) {
 		if (p_table[i] != NULL ) {
 			if (p_table[i]->IsPresent()) {

@@ -16,7 +16,8 @@ private:
 	unsigned pid:4;
 	unsigned v_page_num:6;
 	unsigned is_mapped:1;
-	unsigned long age_last_use:32;
+	unsigned long age:32;
+	unsigned long last_used:32;
 public:
 	Frame();
 	int GetFrameNum();
@@ -30,7 +31,8 @@ public:
 	void SetAgeBit();
 	void UnSetAgeBit();
 	unsigned long GetAge();
-	void SetLastUsed(int current_time);
+	unsigned long GetLastUsed();
+	void SetLastUsed(unsigned long  current_time);
 //	bool IsReferenced();
 //	void SetReferenced();
 //	void UnSetReferenced();

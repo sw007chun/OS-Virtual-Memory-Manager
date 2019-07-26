@@ -16,7 +16,6 @@ using namespace std;
 extern int dotrace;
 #define trace(fmt...) do { if (dotrace > 0) { cout << fmt << endl; fflush(stdout); } } while (0)
 
-
 class PTE {
 private:
 	unsigned present:1;
@@ -51,6 +50,5 @@ public:
 	bool IsFiledMapped();
 
 };
-
 
 #endif /* PAGETABLEENTRY_H_ */

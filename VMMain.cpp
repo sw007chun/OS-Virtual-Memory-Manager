@@ -22,6 +22,7 @@
 using namespace std;
 
 int dotrace = 0;
+int doAging = 0;;
 
 int main(int argc, char* argv[]) {
 	int c, num_Process;
@@ -51,7 +52,10 @@ int main(int argc, char* argv[]) {
 
 	bool page_table_option = false;
 	bool frame_table_option = false;;
-	bool summary = false;
+	bool summary_option = false;
+	bool page_entry_option = false;
+	bool all_page_entry_option = false;
+	bool frame_table_each_time = false;
 
 	for (int i = 0; option[i] != '\0'; i++) {
 		switch (option[i]) {
@@ -65,15 +69,19 @@ int main(int argc, char* argv[]) {
 			frame_table_option = true;
 			break;
 		case 'S':
-			summary = true;
+			summary_option = true;
 			break;
 		case 'x':
+			page_entry_option = true;
 			break;
 		case 'y':
+			all_page_entry_option = true;
 			break;
 		case 'f':
+			frame_table_each_time = true;
 			break;
 		case 'a':
+			doAging = 1;
 			break;
 		default:
 			break;
@@ -182,7 +190,9 @@ int main(int argc, char* argv[]) {
 				if (new_frame->IsMapped()) {
 					int old_pid = new_frame->GetPID();
 					int old_page_num = new_frame->GetVPageNum();
+
 					proc[old_pid]->UnSetPresent(old_page_num);
+
 					if (proc[old_pid]->IsModified(old_page_num )) {
 						proc[old_pid]->UnSetModified(old_page_num);
 						if (proc[old_pid]->IsFileMapped(old_page_num))
@@ -212,7 +222,15 @@ int main(int argc, char* argv[]) {
 				else
 					page_entry->SetModified();
 			}
+			if (all_page_entry_option) {
+				for (int i = 0; i < num_Process; i++)
+					proc[i]->PrintProcTable();
+			}
+			else if (page_entry_option)
+				current_process->PrintProcTable();
 
+			if (frame_table_each_time)
+				pager->PrintFrameTable();
 			break;
 		case 'e':
 			proc[inst_num]->ExitProcess(pager);
@@ -221,7 +239,6 @@ int main(int argc, char* argv[]) {
 		default:
 			break;
 		}
-
 	}
 
 	if (page_table_option) {
@@ -233,7 +250,7 @@ int main(int argc, char* argv[]) {
 		pager->PrintFrameTable();
 	}
 
-	if (summary) {
+	if (summary_option) {
 		unsigned long long total_cost = 0;
 		const int kSwitchCost = 121;
 		const int kExitCost = 175;
@@ -246,6 +263,9 @@ int main(int argc, char* argv[]) {
 	}
 
 	delete [] rand;
+	for (int i = 0; i < num_Process; i++)
+		delete proc[i];
+//	delete[] proc;
 	delete pager;
 }
 

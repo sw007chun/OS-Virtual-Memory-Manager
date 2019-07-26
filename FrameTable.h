@@ -21,6 +21,7 @@ private:
 	int cur_num_frame;
 public:
 	FrameTable(int num);
+	~FrameTable();
 	Frame* GetFreeFrame();
 	Frame* At(int frame_num);
 	int GetMaxNum();

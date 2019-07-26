@@ -12,7 +12,8 @@ Frame::Frame() {
 	pid = 0;
 	v_page_num = 0;
 	is_mapped = 0;
-	age_last_use = 0;
+	age = 0;
+	last_used = 0;
 }
 int Frame::GetFrameNum() {
 	return frame_num;
@@ -39,19 +40,22 @@ void Frame::SetFree() {
 	is_mapped = false;
 }
 void Frame::ShiftAge() {
-	age_last_use = age_last_use >> 1;
+	age = age >> 1;
 }
 void Frame::SetAgeBit() {
-	age_last_use = (age_last_use | 0x80000000);
+	age = (age | 0x80000000);
 }
 void Frame::UnSetAgeBit() {
-	age_last_use = 0;
+	age = 0;
 }
 unsigned long Frame::GetAge() {
-	return age_last_use;
+	return age;
 }
-void Frame::SetLastUsed(int current_time) {
-	age_last_use = current_time;
+void Frame::SetLastUsed(unsigned long current_time) {
+	last_used = current_time;
+}
+unsigned long Frame::GetLastUsed() {
+	return last_used;
 }
 //bool Frame::IsReferenced() {
 //	return is_referenced;

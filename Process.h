@@ -17,12 +17,6 @@ typedef struct vma {
 	int end_page;
 	bool write_protected;
 	bool filemap;
-//	vma () {
-//		start_page = 0;
-//		end_page = 0;
-//		write_protected = 0;
-//		filemap = 0;
-//	}
 } vma;
 
 typedef struct pstat {
@@ -55,7 +49,8 @@ private:
 	list <vma*> *vma_list;
 	PTE **p_table;
 public:
-	Process (int p_num, list <vma *> *vma_list);
+	Process(int p_num, list <vma *> *vma_list);
+	~Process();
 //	Process (int p_num, vma vma_array[]);
 	int GetPID();
 	PTE* GetVPage(int v_page_num);

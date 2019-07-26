@@ -16,6 +16,9 @@ FrameTable::FrameTable(int num) {
 		free_q.push(&f_table[i]);
 	}
 }
+FrameTable::~FrameTable() {
+	delete[] f_table;
+}
 Frame* FrameTable::GetFreeFrame() {
 	if (!free_q.empty()) {
 		Frame *frame = free_q.front();
